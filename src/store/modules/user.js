@@ -1,9 +1,10 @@
-import { loginAPI } from '@/api'
+import { loginAPI, getUserProfileAPI } from '@/api'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const getDefaultState = () => {
   return {
     token: getToken(), //! vuex的state值，使用本地持久化的(刷新时默认去本地取)
+    userInfo: {}, //! 保存用户基本信息
     name: '',
     avatar: ''
   }
@@ -29,6 +30,14 @@ const mutations = {
   REMOVE_TOKEN(state) {
     state.token = ''
     removeToken()
+  },
+  //! **********************操作uesrInfo*******************
+  SET_USER(state, value) {
+    state.userInfo = value
+  },
+  //! 删除用户信息
+  REMOVE_USER(state) {
+    state.userInfo = {}
   }
 }
 
@@ -40,6 +49,17 @@ const actions = {
     commit('SET_TOKEN', res.data)
     return res // 把结果返回
     //! async函数return的值，只要不是promise.reject(),都是成功的值
+  },
+  //! 获取用户基本信息
+  async getUserInfoActions({ commit }) {
+    const res = await getUserProfileAPI()
+    console.log(res)
+    commit('SET_USER', res.data)
+  },
+  //! 封装-退出登录的逻辑
+  logoutActions({ commit }) {
+    commit('REMOVE_TOKEN')
+    commit('REMOVE_USER')
   }
 }
 

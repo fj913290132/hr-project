@@ -16,6 +16,7 @@ router.beforeEach(async(to, from, next) => {
       next('/')
       NProgress.done()
     } else {
+      if (!store.getters.name) { store.dispatch('user/getUserInfoActions') }
       next()
     }
   } else {

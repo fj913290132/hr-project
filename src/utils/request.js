@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
 
 const service = axios.create({
   // process.env 是nodejs内置的固定环境变量对象
@@ -40,8 +41,17 @@ service.interceptors.response.use(
     }
   },
   error => {
-    // 4xx的响应状态，如果后台返回了响应数据，我们就用一下
+    console.dir(error)
+    // 4xx/5xx的响应状态，如果后台返回了响应数据，我们就用一下
     Message.error((error.response && error.response.data && error.response.data.message) || error.message)
+    //! 上面是报错就提示，下面是具体的分析
+    //! 可以用http状态码来判断 error.response.status === 401
+    //! 或者还可以用code逻辑码来判断
+    if (error?.response?.data?.code === 10002) {
+      //! 前端个token过期：清除token(vuex和本地都有)、清除用户信息、返回login页面
+      store.dispatch('user/logoutActions')
+      router.replace('/login')
+    }
     return Promise.reject(error)
   }
 )

@@ -56,9 +56,6 @@
         <span style="margin-right:20px; font-size:20px; color:pink;">默认密码:  123456</span>
       </div>
     </el-form>
-    <div>
-      <button @click="testFn">测试</button>
-    </div>
   </div>
 </template>
 
