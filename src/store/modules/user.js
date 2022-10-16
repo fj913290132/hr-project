@@ -1,10 +1,9 @@
-import { login, logout, getInfo } from '@/api/user'
+import { loginAPI } from '@/api'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
-    token: getToken(),
+    token: getToken(), //! vuex的state值，使用本地持久化的(刷新时默认去本地取)
     name: '',
     avatar: ''
   }
@@ -17,74 +16,30 @@ const mutations = {
     Object.assign(state, getDefaultState())
   },
   SET_TOKEN: (state, token) => {
-    state.token = token
+    state.token = token//! vuex中存一份
+    setToken(token)//! 再给本地存一份token
   },
   SET_NAME: (state, name) => {
     state.name = name
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  //! 删除token
+  REMOVE_TOKEN(state) {
+    state.token = ''
+    removeToken()
   }
 }
 
 const actions = {
-  // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      removeToken() // must remove  token  first
-      commit('RESET_STATE')
-      resolve()
-    })
+//! 封装的登录逻辑
+  async loginActions({ commit }, data) {
+    const res = await loginAPI(data)
+    // console.log(res)
+    commit('SET_TOKEN', res.data)
+    return res // 把结果返回
+    //! async函数return的值，只要不是promise.reject(),都是成功的值
   }
 }
 
