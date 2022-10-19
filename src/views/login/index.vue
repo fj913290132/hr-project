@@ -126,7 +126,8 @@ export default {
             // console.log(res)
             //! await 等待后面成功了，才会继续往下走
             this.$message.success(res.message)
-            this.$router.replace('/')
+            //! 拿到回传未遂地址的路径字符串  this.$route.query
+            this.$router.replace(this.$route.query.redirect || '/')
           } catch (error) {
             console.dir(error)
             //  console.log('cuole')

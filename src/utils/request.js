@@ -50,7 +50,8 @@ service.interceptors.response.use(
     if (error?.response?.data?.code === 10002) {
       //! 前端个token过期：清除token(vuex和本地都有)、清除用户信息、返回login页面
       store.dispatch('user/logoutActions')
-      router.replace('/login')
+      //! 返回登录页
+      router.replace(`/login?redirect=${router.currentRoute.fullPath}`)
     }
     return Promise.reject(error)
   }

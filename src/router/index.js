@@ -1,10 +1,34 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+// 引入多个动态路由模块
+import approvalsRouter from './modules/approvals'
+import departmentsRouter from './modules/departments'
+import employeesRouter from './modules/employees'
+import permissionRouter from './modules/permission'
+import attendancesRouter from './modules/attendances'
+import salarysRouter from './modules/salarys'
+import settingRouter from './modules/setting'
+import socialRouter from './modules/social'
+
 Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+
+// 动态路由表，项目中不同的用户可以访问不同的功能
+// 暂时放在这里，最后在更改
+export const asyncRoutes = [
+  // 先空着这里，后面来补充功能
+  departmentsRouter,
+  settingRouter,
+  employeesRouter,
+  permissionRouter,
+  approvalsRouter,
+  attendancesRouter,
+  salarysRouter,
+  socialRouter
+]
 
 export const constantRoutes = [
   {
@@ -27,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
   { path: '*', redirect: '/404', hidden: true }
@@ -36,7 +60,7 @@ export const constantRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: [...constantRoutes, ...asyncRoutes]
 })
 
 const router = createRouter()

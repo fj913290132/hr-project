@@ -1,4 +1,4 @@
-import { loginAPI, getUserProfileAPI } from '@/api'
+import { loginAPI, getUserProfileAPI, getUserPhotoAPI } from '@/api'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const getDefaultState = () => {
@@ -52,9 +52,12 @@ const actions = {
   },
   //! 获取用户基本信息
   async getUserInfoActions({ commit }) {
-    const res = await getUserProfileAPI()
-    console.log(res)
-    commit('SET_USER', res.data)
+    const { data: uesrObj } = await getUserProfileAPI()
+    const { data: photoObj } = await getUserPhotoAPI(uesrObj.userId)
+    // console.log(uesrObj)
+    // console.log(photoObj)
+    commit('SET_USER', { ...uesrObj, ...photoObj })
+    //! 把两对key:value展开放入userinfo
   },
   //! 封装-退出登录的逻辑
   logoutActions({ commit }) {

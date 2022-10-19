@@ -26,3 +26,16 @@ export function getUserProfileAPI() {
     method: 'post'
   })
 }
+
+/**
+ *
+ * @param {*} id
+ * @returns
+ */
+export function getUserPhotoAPI(id) {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'GET'
+  })
+}
+

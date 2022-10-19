@@ -10,7 +10,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img src="@/assets/common/bigUserHeader.png" class="user-avatar">
+          <img :src="avatar" class="user-avatar">
           <span class="name">{{ name }}</span>
           <i class="el-icon-caret-bottom" style="color:#fff" />
         </div>
@@ -54,9 +54,28 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
+    //! 退出登录 -> 点击事件
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      //! 为了提升用户体验给用户一个确认框
+      this.$confirm('这就走了吗？真的不再爱砸破了?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        await this.$store.dispatch('user/logoutActions')
+        //! this.$route.path -> 路由地址，例如'/info'
+        //! this.$route.fullPath -> 路由地址和参数 例如'/info?a=1&b=2'
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+        this.$message({
+          type: 'success',
+          message: '累了，不爱了!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '继续爱'
+        })
+      })
     }
   }
 }
