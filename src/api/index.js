@@ -2,3 +2,4 @@
 //! 导入user.js所有方法并导出
 export * from './user.js'
 export * from './departments.js'
+export * from './setting.js'
