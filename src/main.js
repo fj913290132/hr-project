@@ -14,7 +14,17 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import GlobalComponentObj from '@/components'
+Vue.use(GlobalComponentObj)
 
+// import PageTools from '@/components/PageTools'
+// Vue.component('PageTools', PageTools)
+/* const usePageTools = {
+  install(Vue) {
+    Vue.component('PageTools', PageTools)
+  }
+}
+Vue.use(usePageTools) */
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
